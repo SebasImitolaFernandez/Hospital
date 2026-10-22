@@ -23,35 +23,35 @@ public class NurseController {
 
 	private static final Logger logger = LoggerFactory.getLogger(NurseController.class);
 	private final NurseRepository nurseRepository;
-	
-    @Autowired
-    public NurseController(NurseRepository nurseRepository) {
-        this.nurseRepository = nurseRepository;
-    }
-    
-    @GetMapping("/index")
-    public ResponseEntity<Iterable<Nurse>> getAll() {
-        return ResponseEntity.ok(nurseRepository.findAll());
-    }
 
-	/*
-	 * @PostMapping("/login") public ResponseEntity<Boolean> login(@RequestBody
-	 * Nurse inputNurse) { boolean ok = nurses.stream() .anyMatch(n ->
-	 * Objects.equals(n.getUser(), inputNurse.getUser()) &&
-	 * Objects.equals(n.getPassword(), inputNurse.getPassword()));
-	 * 
-	 * if (ok) { return ResponseEntity.ok(true); }
-	 * 
-	 * logger.warn("Error in login"); return
-	 * ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false); }
-	 * 
-	 * @GetMapping("/name/{name}") public ResponseEntity<Nurse>
-	 * findByName(@PathVariable String name) { Optional<Nurse> result =
-	 * nurses.stream() .filter(n ->
-	 * n.getName().toLowerCase().contains(name.toLowerCase())) .findFirst();
-	 * 
-	 * if (result.isPresent()) { return ResponseEntity.ok(result.get()); }
-	 * 
-	 * return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); }
-	 */
+	@Autowired
+	public NurseController(NurseRepository nurseRepository) {
+		this.nurseRepository = nurseRepository;
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<Boolean> login(@RequestBody Nurse inputNurse) {
+		boolean ok = nurses.stream().anyMatch(n -> Objects.equals(n.getUser(), inputNurse.getUser())
+				&& Objects.equals(n.getPassword(), inputNurse.getPassword()));
+
+		if (ok) {
+			return ResponseEntity.ok(true);
+		}
+
+		logger.warn("Error in login");
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+	}
+
+	@GetMapping("/name/{name}")
+	public ResponseEntity<Nurse> findByName(@PathVariable String name) {
+		Optional<Nurse> result = nurses.stream().filter(n -> n.getName().toLowerCase().contains(name.toLowerCase()))
+				.findFirst();
+
+		if (result.isPresent()) {
+			return ResponseEntity.ok(result.get());
+		}
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	}
+
 }
