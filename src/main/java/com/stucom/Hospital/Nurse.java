@@ -3,16 +3,24 @@ package com.stucom.Hospital;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "nurse")
 
-public class Nurse {
 
+public class Nurse {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
 	private String name;
 	private String user;
+	
+	 @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 	
 	 public Nurse() {
