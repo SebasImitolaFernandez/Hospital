@@ -29,6 +29,10 @@ public class NurseController {
 		this.nurseRepository = nurseRepository;
 	}
 
+	@GetMapping("/index")
+	public ResponseEntity<Iterable<Nurse>> getAll() {
+	}
+
 	@PostMapping("/login")
 	public ResponseEntity<Boolean> login(@RequestBody Nurse inputNurse) {
 		boolean ok = nurses.stream().anyMatch(n -> Objects.equals(n.getUser(), inputNurse.getUser())
