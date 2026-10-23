@@ -43,13 +43,12 @@ public class NurseController {
 	}
 
 	@GetMapping("/name/{name}")
-	public ResponseEntity<Nurse> findByName(@PathVariable String name) {
-		Optional<Nurse> result = nurses.stream().filter(n -> n.getName().toLowerCase().contains(name.toLowerCase()))
-				.findFirst();
+	public ResponseEntity<List<Nurse>> findByName(@PathVariable String name) {
+		List<Nurse> result = nurseRepository.findByNameContainingIgnoreCase(name);
 
-		if (result.isPresent()) {
-			return ResponseEntity.ok(result.get());
-		}
+	    if (!result.isEmpty()) {
+	        return ResponseEntity.ok(result);
+	    }
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
