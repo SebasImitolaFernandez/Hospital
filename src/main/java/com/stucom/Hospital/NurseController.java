@@ -29,8 +29,10 @@ public class NurseController {
 		this.nurseRepository = nurseRepository;
 	}
 
+
 	@GetMapping("/index")
 	public ResponseEntity<Iterable<Nurse>> getAll() {
+	    return ResponseEntity.ok(nurseRepository.findAll());
 	}
 
 	@PostMapping("/login")
