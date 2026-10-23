@@ -35,13 +35,10 @@ public class NurseController {
 
 	@PostMapping("/login")
 	public ResponseEntity<Boolean> login(@RequestBody Nurse inputNurse) {
-		boolean ok = nurses.stream().anyMatch(n -> Objects.equals(n.getUser(), inputNurse.getUser())
-				&& Objects.equals(n.getPassword(), inputNurse.getPassword()));
+		boolean ok = nurseRepository.existUserPassword(
+				inputNurse.getUser(), inputNurse.getPassword());
 
-		if (ok) {
-			return ResponseEntity.ok(true);
-		}
-
+		if (ok) {return ResponseEntity.ok(true);}
 		logger.warn("Error in login");
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
 	}
