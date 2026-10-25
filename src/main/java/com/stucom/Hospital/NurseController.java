@@ -1,8 +1,6 @@
 package com.stucom.Hospital;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -35,8 +33,12 @@ public class NurseController {
 
 	@PostMapping("/login")
 	public ResponseEntity<Boolean> login(@RequestBody Nurse inputNurse) {
-		boolean ok = nurseRepository.existUserPassword(
+		Optional<Nurse> nurseLogin = nurseRepository.findByUserAndPassword(
 				inputNurse.getUser(), inputNurse.getPassword());
+
+		if (nurseLogin.isPresent()) {
+			return ResponseEntity.ok(true);
+		}
 
 		if (ok) {return ResponseEntity.ok(true);}
 		logger.warn("Error in login");
@@ -44,15 +46,13 @@ public class NurseController {
 	}
 
 	@GetMapping("/name/{name}")
-	public ResponseEntity<Nurse> findByName(@PathVariable String name) {
-		Optional<Nurse> result = nurses.stream().filter(n -> n.getName().toLowerCase().contains(name.toLowerCase()))
-				.findFirst();
+	public ResponseEntity<List<Nurse>> findByName(@PathVariable String name) {
+		List<Nurse> result = nurseRepository.findByNameContainingIgnoreCase(name);
 
-		if (result.isPresent()) {
-			return ResponseEntity.ok(result.get());
+		if (!result.isEmpty()) {
+			return ResponseEntity.ok(result);
 		}
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
-
 }

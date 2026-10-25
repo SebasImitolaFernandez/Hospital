@@ -1,11 +1,13 @@
 package com.stucom.Hospital;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 
-public interface NurseRepository extends CrudRepository<Nurse, Long> {
-    boolean existUserPassword(String user,String password);
-    Optional<Nurse> findByName(String name);
+public interface NurseRepository extends JpaRepository<Nurse, Integer> {
+
+    List<Nurse> findByNameContainingIgnoreCase(String name);
+
+    Optional<Nurse> findByUserAndPassword(String user, String password);
 }
