@@ -27,6 +27,10 @@ public class NurseController {
 		this.nurseRepository = nurseRepository;
 	}
 
+	@GetMapping("/index")
+	public ResponseEntity<Iterable<Nurse>> getAll() {
+	}
+
 	@PostMapping("/login")
 	public ResponseEntity<Boolean> login(@RequestBody Nurse inputNurse) {
 		Optional<Nurse> nurseLogin = nurseRepository.findByUserAndPassword(
@@ -36,6 +40,7 @@ public class NurseController {
 			return ResponseEntity.ok(true);
 		}
 
+		if (ok) {return ResponseEntity.ok(true);}
 		logger.warn("Error in login");
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
 	}
