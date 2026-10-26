@@ -29,18 +29,19 @@ public class NurseController {
 
 	@GetMapping("/index")
 	public ResponseEntity<Iterable<Nurse>> getAll() {
+		return ResponseEntity.ok(nurseRepository.findAll());
 	}
-
+	
 	@PostMapping("/login")
 	public ResponseEntity<Boolean> login(@RequestBody Nurse inputNurse) {
-		Optional<Nurse> nurseLogin = nurseRepository.findByUserAndPassword(
-				inputNurse.getUser(), inputNurse.getPassword());
-
-		if (nurseLogin.isPresent()) {
+		boolean ok = nurseRepository
+				.findByUserAndPassword(inputNurse.getUser(), inputNurse.getPassword())
+				.isPresent();
+ 
+		if (ok) {
 			return ResponseEntity.ok(true);
 		}
-
-		if (ok) {return ResponseEntity.ok(true);}
+ 
 		logger.warn("Error in login");
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
 	}
@@ -48,11 +49,16 @@ public class NurseController {
 	@GetMapping("/name/{name}")
 	public ResponseEntity<List<Nurse>> findByName(@PathVariable String name) {
 		List<Nurse> result = nurseRepository.findByNameContainingIgnoreCase(name);
-
+ 
 		if (!result.isEmpty()) {
 			return ResponseEntity.ok(result);
 		}
-
+ 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	}
+	
+	@PostMapping
+	public ResponseEntity<Nurse> create(@RequestBody Nurse nurse) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(nurseRepository.save(nurse));
 	}
 }
