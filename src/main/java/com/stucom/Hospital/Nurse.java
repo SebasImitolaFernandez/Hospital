@@ -26,14 +26,12 @@ public class Nurse {
 	 public Nurse() {
 	    }
 
-	public Nurse(int id, String name, String user, String password) {
-
-		super();
-		this.id = id;
-		this.name = name;
-		this.user = user;
-		this.password = password;
-	}
+		/*
+		 * public Nurse(int id, String name, String user, String password) {
+		 * 
+		 * super(); this.id = id; this.name = name; this.user = user; this.password =
+		 * password; }
+		 */
 
 	public int getId() {
 		return id;

@@ -1,8 +1,6 @@
 package com.stucom.Hospital;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -29,32 +27,38 @@ public class NurseController {
 		this.nurseRepository = nurseRepository;
 	}
 
-
 	@GetMapping("/index")
 	public ResponseEntity<Iterable<Nurse>> getAll() {
-	    return ResponseEntity.ok(nurseRepository.findAll());
+		return ResponseEntity.ok(nurseRepository.findAll());
 	}
-
+	
 	@PostMapping("/login")
 	public ResponseEntity<Boolean> login(@RequestBody Nurse inputNurse) {
-		boolean ok = nurseRepository.existUserPassword(
-				inputNurse.getUser(), inputNurse.getPassword());
-
-		if (ok) {return ResponseEntity.ok(true);}
+		boolean ok = nurseRepository
+				.findByUserAndPassword(inputNurse.getUser(), inputNurse.getPassword())
+				.isPresent();
+ 
+		if (ok) {
+			return ResponseEntity.ok(true);
+		}
+ 
 		logger.warn("Error in login");
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
 	}
 
 	@GetMapping("/name/{name}")
-	public ResponseEntity<Nurse> findByName(@PathVariable String name) {
-		Optional<Nurse> result = nurses.stream().filter(n -> n.getName().toLowerCase().contains(name.toLowerCase()))
-				.findFirst();
-
-		if (result.isPresent()) {
-			return ResponseEntity.ok(result.get());
+	public ResponseEntity<List<Nurse>> findByName(@PathVariable String name) {
+		List<Nurse> result = nurseRepository.findByNameContainingIgnoreCase(name);
+ 
+		if (!result.isEmpty()) {
+			return ResponseEntity.ok(result);
 		}
-
+ 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
-
+	
+	@PostMapping
+	public ResponseEntity<Nurse> create(@RequestBody Nurse nurse) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(nurseRepository.save(nurse));
+	}
 }
