@@ -61,4 +61,6 @@ public class NurseController {
 	public ResponseEntity<Nurse> create(@RequestBody Nurse nurse) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(nurseRepository.save(nurse));
 	}
+	
+	
 }
