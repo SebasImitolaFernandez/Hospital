@@ -57,6 +57,7 @@ public class NurseController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 	
+	//Creation C___
 	@PostMapping
 	public ResponseEntity<Nurse> create(@RequestBody Nurse nurse) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(nurseRepository.save(nurse));
