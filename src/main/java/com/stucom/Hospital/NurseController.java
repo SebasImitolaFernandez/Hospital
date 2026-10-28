@@ -31,17 +31,15 @@ public class NurseController {
 	public ResponseEntity<Iterable<Nurse>> getAll() {
 		return ResponseEntity.ok(nurseRepository.findAll());
 	}
-	
+
 	@PostMapping("/login")
 	public ResponseEntity<Boolean> login(@RequestBody Nurse inputNurse) {
-		boolean ok = nurseRepository
-				.findByUserAndPassword(inputNurse.getUser(), inputNurse.getPassword())
-				.isPresent();
- 
+		boolean ok = nurseRepository.findByUserAndPassword(inputNurse.getUser(), inputNurse.getPassword()).isPresent();
+
 		if (ok) {
 			return ResponseEntity.ok(true);
 		}
- 
+
 		logger.warn("Error in login");
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
 	}
@@ -49,19 +47,26 @@ public class NurseController {
 	@GetMapping("/name/{name}")
 	public ResponseEntity<List<Nurse>> findByName(@PathVariable String name) {
 		List<Nurse> result = nurseRepository.findByNameContainingIgnoreCase(name);
- 
+
 		if (!result.isEmpty()) {
 			return ResponseEntity.ok(result);
 		}
- 
+
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
-	
-	//Creation C___
+
+	// Creation C___
 	@PostMapping
 	public ResponseEntity<Nurse> create(@RequestBody Nurse nurse) {
+		if (nurse.getName() == null || nurse.getName().isBlank() || nurse.getUser() == null || nurse.getUser().isBlank()
+				|| nurse.getPassword() == null || nurse.getPassword().isBlank()) {
+			return ResponseEntity.badRequest().build();
+		}
+		nurse.setId(0);
+		if (nurseRepository.existsByUser(nurse.getUser())) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(nurseRepository.save(nurse));
 	}
-	
-	
+
 }
