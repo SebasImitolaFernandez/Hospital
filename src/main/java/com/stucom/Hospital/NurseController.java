@@ -46,6 +46,8 @@ public class NurseController {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
 	}
 
+	// GET NURSE BY NAME
+
 	@GetMapping("/name/{name}")
 	public ResponseEntity<List<Nurse>> findByName(@PathVariable String name) {
 		List<Nurse> result = nurseRepository.findByNameContainingIgnoreCase(name);
@@ -56,7 +58,21 @@ public class NurseController {
  
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
-	
+
+	// GET NURSE BY USER
+
+	@GetMapping("/user/{user}")
+	public ResponseEntity<Nurse> getByUser(@PathVariable String user) {
+
+		Optional<Nurse> nurse = nurseRepository.findByUser(user);
+
+		if (nurse.isPresent()) {
+			return ResponseEntity.ok(nurse.get());
+		}
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	}
+		
 	@PostMapping
 	public ResponseEntity<Nurse> create(@RequestBody Nurse nurse) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(nurseRepository.save(nurse));
