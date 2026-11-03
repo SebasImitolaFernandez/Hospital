@@ -59,12 +59,12 @@ public class NurseController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 
-	// GET NURSE BY USER
+	// GET NURSE BY ID
 
-	@GetMapping("/user/{user}")
-	public ResponseEntity<Nurse> getByUser(@PathVariable String user) {
+	@GetMapping("/id/{id}")
+	public ResponseEntity<Nurse> getById(@PathVariable Integer id) {
 
-		Optional<Nurse> nurse = nurseRepository.findByUser(user);
+		Optional<Nurse> nurse = nurseRepository.findById(id);
 
 		if (nurse.isPresent()) {
 			return ResponseEntity.ok(nurse.get());
@@ -72,7 +72,7 @@ public class NurseController {
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
-		
+
 	@PostMapping
 	public ResponseEntity<Nurse> create(@RequestBody Nurse nurse) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(nurseRepository.save(nurse));
