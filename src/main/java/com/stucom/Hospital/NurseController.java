@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -69,4 +70,33 @@ public class NurseController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(nurseRepository.save(nurse));
 	}
 
+	
+	
+	//Update___U
+
+	@PutMapping("/{id}")
+	public ResponseEntity<Nurse> update(@PathVariable int id, @RequestBody Nurse nurse) {
+		Optional<Nurse> existing = nurseRepository.findById(id);
+
+		if (existing.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+
+		if (nurse.getName() == null || nurse.getName().isBlank() || nurse.getUser() == null || nurse.getUser().isBlank()
+				|| nurse.getPassword() == null || nurse.getPassword().isBlank()) {
+			return ResponseEntity.badRequest().build();
+		}
+
+		Nurse toUpdate = existing.get();
+
+		if (!toUpdate.getUser().equals(nurse.getUser()) && nurseRepository.existsByUser(nurse.getUser())) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+
+		toUpdate.setName(nurse.getName());
+		toUpdate.setUser(nurse.getUser());
+		toUpdate.setPassword(nurse.getPassword());
+
+		return ResponseEntity.ok(nurseRepository.save(toUpdate));
+	}
 }
