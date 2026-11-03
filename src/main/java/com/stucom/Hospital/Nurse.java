@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 
 @Entity
 @Table(name = "nurse")
@@ -18,6 +19,7 @@ public class Nurse {
 	private int id;
 	
 	private String name;
+	@Column(unique = true)
 	private String user;
 	
 	 @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -25,13 +27,6 @@ public class Nurse {
 	
 	 public Nurse() {
 	    }
-
-		/*
-		 * public Nurse(int id, String name, String user, String password) {
-		 * 
-		 * super(); this.id = id; this.name = name; this.user = user; this.password =
-		 * password; }
-		 */
 
 	public int getId() {
 		return id;
