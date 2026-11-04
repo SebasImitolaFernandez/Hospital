@@ -45,12 +45,28 @@ public class NurseController {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
 	}
 
+	// GET NURSE BY NAME
+
 	@GetMapping("/name/{name}")
 	public ResponseEntity<List<Nurse>> findByName(@PathVariable String name) {
 		List<Nurse> result = nurseRepository.findByNameContainingIgnoreCase(name);
 
 		if (!result.isEmpty()) {
 			return ResponseEntity.ok(result);
+		}
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	}
+
+	// GET NURSE BY ID
+
+	@GetMapping("/id/{id}")
+	public ResponseEntity<Nurse> getById(@PathVariable Integer id) {
+
+		Optional<Nurse> nurse = nurseRepository.findById(id);
+
+		if (nurse.isPresent()) {
+			return ResponseEntity.ok(nurse.get());
 		}
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
