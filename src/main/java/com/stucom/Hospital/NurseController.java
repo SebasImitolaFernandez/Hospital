@@ -85,6 +85,7 @@ public class NurseController {
 		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(nurseRepository.save(nurse));
 	}
+	// Delete____D
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteNurse(@PathVariable Integer id) {
 	    Optional<Nurse> nurse = nurseRepository.findById(id);
