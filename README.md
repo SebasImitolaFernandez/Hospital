@@ -1,129 +1,212 @@
-Hospital Management System 🏥
+# Hospital Nurse API 🏥
 
-An end-to-end management solution designed to streamline hospital administration, patient admissions, medical appointments, and medical staff workflows.
+![Java CI with Maven](https://github.com/SebasImitolaFernandez/Hospital/actions/workflows/maven.yml/badge.svg)
 
-📐 System Architecture & Diagrams
+A REST API built with **Spring Boot** to manage the nurses of a hospital. It supports the full set of CRUD operations (create, read, update and delete) and validates nurse logins.
 
-1. High-Level Architecture Diagram
+The project also includes a **continuous integration** pipeline with GitHub Actions that runs the unit tests on every push and pull request, so errors are detected early.
 
-graph TD
-    Client[Client / Web UI] -->|HTTP / REST API| API[API Gateway / Server]
-    API --> Auth[Authentication & Authorization]
-    API --> PatientService[Patient Management Service]
-    API --> ApptService[Appointment Service]
-    API --> StaffService[Staff & Doctor Service]
+---
 
-    PatientService --> Database[(Main Database)]
-    ApptService --> Database
-    StaffService --> Database
+## 📐 Architecture
 
+```mermaid
+graph LR
+    Client[Client / Postman] -->|HTTP + JSON| Controller[NurseController]
+    Controller --> Repository[NurseRepository<br/>Spring Data JPA]
+    Repository --> DB[(MySQL)]
+```
 
-2. Patient Appointment Flow
+| Layer | Class | Responsibility |
+|---|---|---|
+| Controller | `NurseController` | Exposes the REST endpoints, validates input and returns the HTTP status codes |
+| Repository | `NurseRepository` | Accesses the database through Spring Data JPA |
+| Entity | `Nurse` | Represents a nurse (`id`, `name`, `user`, `password`) |
 
-sequenceDiagram
-    autonumber
-    actor Patient
-    participant System as Hospital System
-    participant Doctor
-    participant DB as Database
+### Continuous integration flow
 
-    Patient->>System: Request Appointment (Date, Specialty)
-    System->>DB: Check Doctor Availability
-    DB-->>System: Return Available Slots
-    System-->>Patient: Display Open Slots
-    Patient->>System: Confirm Slot & Details
-    System->>DB: Save Appointment Record
-    DB-->>System: Confirmation Saved
-    System->>Doctor: Notify New Appointment
-    System-->>Patient: Send Confirmation Summary
+```mermaid
+graph LR
+    A[Commit & push] --> B[GitHub Actions]
+    B --> C[Build with Maven]
+    C --> D[Run JUnit tests]
+    D -->|All pass| E[✅ Green]
+    D -->|Any fails| F[❌ Red]
+```
 
+---
 
-✨ Features
+## ✨ Features
 
-👤 Patient Management: Complete record-keeping including personal details, medical histories, and treatment logs.
+- 👩‍⚕️ **Create nurses** with validation of required fields and unique usernames.
+- 🔎 **Find nurses** by id or by name (partial, case-insensitive search).
+- ✏️ **Update nurses** by id.
+- 🗑️ **Delete nurses** by id.
+- 🔐 **Login** with username and password.
+- ✅ **Unit tests** covering every endpoint of `NurseController`.
+- ⚙️ **CI pipeline** that runs the tests automatically.
 
-📅 Appointment Scheduling: Streamlined booking, rescheduling, and cancellation system for patients and doctors.
+---
 
-👨‍⚕️ Staff Directory: Role-based management for doctors, nurses, and administrative personnel.
+## 🛠️ Tech Stack
 
-🔒 Role-Based Access Control (RBAC): Secure access restricting sensitive medical records to authorized personnel.
+| Category | Technology |
+|---|---|
+| Language | Java 17 |
+| Framework | Spring Boot 4.1.1 (Web MVC, Data JPA) |
+| Database | MySQL (MySQL Connector/J) |
+| Build tool | Maven |
+| Testing | JUnit, Mockito, MockMvc |
+| CI | GitHub Actions |
 
-📊 Dashboard & Metrics: Overview of daily visits, doctor availability, and patient queue status.
+---
 
-🛠️ Tech Stack
+## 🚀 Installation
 
-Frontend: HTML5, CSS3, JavaScript / React / Angular (Update based on your project)
+### Prerequisites
 
-Backend: Java / Node.js / Python / C# (Update based on your project)
+- [Git](https://git-scm.com/)
+- [Java JDK 17](https://adoptium.net/) or higher
+- A MySQL database
+- Maven is optional: the project includes the Maven Wrapper (`mvnw`)
 
-Database: PostgreSQL / MySQL / MongoDB (Update based on your project)
+### Steps
 
-Tools & ORM: Git, Docker, Hibernate/Prisma (Optional)
+1. **Clone the repository:**
 
-🚀 Getting Started
+   ```bash
+   git clone https://github.com/SebasImitolaFernandez/Hospital.git
+   cd Hospital
+   ```
 
-Prerequisites
+2. **Configure the database** in `src/main/resources/application.properties`:
 
-Ensure you have the following installed locally:
+   ```properties
+   spring.datasource.url=jdbc:mysql://<host>:3306/<database>
+   spring.datasource.username=<user>
+   spring.datasource.password=<password>
+   ```
 
-Git (git --version)
+3. **Install dependencies and build:**
 
-Runtime / Compiler (e.g., Node.js, Java JDK, or Python depending on implementation)
+   ```bash
+   ./mvnw clean install
+   ```
 
-Database Engine (e.g., MySQL, PostgreSQL)
+   On Windows use `mvnw.cmd clean install`.
 
-Installation
+---
 
-Clone the repository:
+## 💻 Usage
 
-git clone https://github.com/SebasImitolaFernandez/Hospital.git
-cd Hospital
+### Run the application
 
+```bash
+./mvnw spring-boot:run
+```
 
-Environment Configuration:
-Create a .env file in the root folder and add your specific variables:
+The API will be available at `http://localhost:8080`.
 
-PORT=5000
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=yourpassword
-DB_NAME=hospital_db
+### Endpoints
 
+| Method | Route | Description | Responses |
+|---|---|---|---|
+| `GET` | `/nurse/index` | List all nurses | `200` |
+| `GET` | `/nurse/id/{id}` | Find a nurse by id | `200`, `404` |
+| `GET` | `/nurse/name/{name}` | Find nurses by name | `200`, `404` |
+| `POST` | `/nurse/create` | Create a nurse | `201`, `400`, `409` |
+| `PUT` | `/nurse/{id}` | Update a nurse | `200`, `400`, `404`, `409` |
+| `DELETE` | `/nurse/{id}` | Delete a nurse | `200`, `404` |
+| `POST` | `/nurse/login` | Validate username and password | `200`, `401` |
 
-Install Dependencies & Setup Database:
+**Status codes:**
 
-# Example command
-npm install
-# Or for Python: pip install -r requirements.txt
-# Or for Maven: ./mvnw clean install
+- `200 OK` – Request completed successfully.
+- `201 Created` – Nurse created.
+- `400 Bad Request` – Missing or empty fields (`name`, `user` and `password` are required).
+- `401 Unauthorized` – Wrong username or password.
+- `404 Not Found` – No nurse with that id or name.
+- `409 Conflict` – The username is already taken.
 
+### Examples
 
-Run the Application:
+**Create a nurse**
 
-# Start server command
-npm start
+```http
+POST /nurse/create
+Content-Type: application/json
 
+{
+  "name": "Ana",
+  "user": "ana",
+  "password": "1234"
+}
+```
 
-🤝 Contributing
+Returns `201 Created` with the new nurse.
 
-Contributions are welcome! Please follow these steps to contribute:
+**Update a nurse**
 
-Fork the repository.
+```http
+PUT /nurse/1
+Content-Type: application/json
 
-Create a new branch: git checkout -b feature/YourFeatureName
+{
+  "name": "Ana María",
+  "user": "ana",
+  "password": "newpass"
+}
+```
 
-Commit your changes: git commit -m "Add YourFeatureName"
+Returns `200 OK` with the updated nurse. All three fields must be sent.
 
-Push to the branch: git push origin feature/YourFeatureName
+**Login**
 
-Open a Pull Request.
+```http
+POST /nurse/login
+Content-Type: application/json
 
-👤 Author
+{
+  "user": "ana",
+  "password": "1234"
+}
+```
 
-Sebas Imitola Fernandez
+Returns `true` with `200 OK` if the credentials are correct, or `false` with `401 Unauthorized` otherwise.
 
-GitHub: @SebasImitolaFernandez
+**Delete a nurse**
 
-📄 License
+```http
+DELETE /nurse/1
+```
 
-This project is open-source under the MIT License.
+Returns `200 OK` if it was deleted, or `404 Not Found` if it does not exist.
+
+---
+
+## 🧪 Tests
+
+Run the unit tests:
+
+```bash
+./mvnw test
+```
+
+The tests live in `src/test/java/com/stucom/Hospital/NurseControllerTests.java` and cover every endpoint of `NurseController`, including both success and error cases. They use **Mockito** to simulate the repository, so they do not need a database and run quickly in the pipeline.
+
+`HospitalApplicationTests` is disabled because it starts the whole application and needs a connection to the real database, which is not available in CI.
+
+---
+
+## ⚙️ Continuous Integration
+
+The workflow in `.github/workflows/maven.yml` builds the project and runs `mvn test` automatically. The results can be checked in the **Actions** tab of the repository, and the badge at the top of this README shows the current status.
+
+---
+
+## 👥 Authors
+
+- Jeremy Tandazo
+- Sebastian Imitola
+- Daniel Lop
+- Laia 
