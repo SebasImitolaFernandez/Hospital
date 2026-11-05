@@ -212,10 +212,10 @@ class NurseControllerTests {
 		}
 	}
  
-	// ---------- POST /nurse ----------
+	// ---------- POST /nurse/create ----------
  
 	@Nested
-	@DisplayName("POST /nurse (crear)")
+	@DisplayName("POST /nurse/create (crear)")
 	class Create {
  
 		@Test
@@ -228,7 +228,7 @@ class NurseControllerTests {
 				return n;
 			});
  
-			mockMvc.perform(post("/nurse")
+			mockMvc.perform(post("/nurse/create")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json("Ana", "ana", "1234")))
 					.andExpect(status().isCreated())
@@ -243,7 +243,7 @@ class NurseControllerTests {
 			when(nurseRepository.existsByUser("ana")).thenReturn(false);
 			when(nurseRepository.save(any(Nurse.class))).thenAnswer(inv -> inv.getArgument(0));
  
-			mockMvc.perform(post("/nurse")
+			mockMvc.perform(post("/nurse/create")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content("{\"id\":55,\"name\":\"Ana\",\"user\":\"ana\",\"password\":\"1234\"}"))
 					.andExpect(status().isCreated());
@@ -258,7 +258,7 @@ class NurseControllerTests {
 		void conflict() throws Exception {
 			when(nurseRepository.existsByUser("ana")).thenReturn(true);
  
-			mockMvc.perform(post("/nurse")
+			mockMvc.perform(post("/nurse/create")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json("Ana", "ana", "1234")))
 					.andExpect(status().isConflict());
@@ -269,7 +269,7 @@ class NurseControllerTests {
 		@Test
 		@DisplayName("Falta el nombre -> 400")
 		void missingName() throws Exception {
-			mockMvc.perform(post("/nurse")
+			mockMvc.perform(post("/nurse/create")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json(null, "ana", "1234")))
 					.andExpect(status().isBadRequest());
@@ -280,7 +280,7 @@ class NurseControllerTests {
 		@Test
 		@DisplayName("Usuario en blanco -> 400")
 		void blankUser() throws Exception {
-			mockMvc.perform(post("/nurse")
+			mockMvc.perform(post("/nurse/create")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json("Ana", "   ", "1234")))
 					.andExpect(status().isBadRequest());
@@ -291,7 +291,7 @@ class NurseControllerTests {
 		@Test
 		@DisplayName("Falta la contraseña -> 400")
 		void missingPassword() throws Exception {
-			mockMvc.perform(post("/nurse")
+			mockMvc.perform(post("/nurse/create")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json("Ana", "ana", null)))
 					.andExpect(status().isBadRequest());
