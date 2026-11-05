@@ -2,7 +2,7 @@ package com.stucom.Hospital;
 
 import java.util.List;
 import java.util.Optional;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +84,17 @@ public class NurseController {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(nurseRepository.save(nurse));
+	}
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteNurse(@PathVariable Integer id) {
+	    Optional<Nurse> nurse = nurseRepository.findById(id);
+
+	    if (nurse.isPresent()) {
+	        nurseRepository.deleteById(id);
+	        return ResponseEntity.ok().build();
+	    }
+
+	    return ResponseEntity.notFound().build();
 	}
 
 	
