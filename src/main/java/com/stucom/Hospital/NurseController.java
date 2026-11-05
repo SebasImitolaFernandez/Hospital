@@ -73,7 +73,7 @@ public class NurseController {
 	}
 
 	// Creation C___
-	@PostMapping
+	@PostMapping("/create")
 	public ResponseEntity<Nurse> create(@RequestBody Nurse nurse) {
 		if (nurse.getName() == null || nurse.getName().isBlank() || nurse.getUser() == null || nurse.getUser().isBlank()
 				|| nurse.getPassword() == null || nurse.getPassword().isBlank()) {
