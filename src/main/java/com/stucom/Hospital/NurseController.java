@@ -83,7 +83,7 @@ public class NurseController {
 		if (nurseRepository.existsByUser(nurse.getUser())) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(nurseRepository.save(nurse));
+		return ResponseEntity.status(HttpStatus.CREATED).body(nurseRepository.save(nurse));
 	}
 	// Delete____D
 	@DeleteMapping("/{id}")
