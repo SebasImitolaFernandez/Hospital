@@ -45,14 +45,13 @@ public class NurseController {
 	}
 
 	@GetMapping("/name/{name}")
-	public ResponseEntity<List<Nurse>> findByName(@PathVariable String name) {
-		List<Nurse> result = nurseRepository.findByNameContainingIgnoreCase(name);
-
-		if (!result.isEmpty()) {
-			return ResponseEntity.ok(result);
+	public ResponseEntity<Nurse> findByName(@PathVariable String name) {
+		Optional<Nurse> result = nurseRepository.findFirstByNameIgnoreCase(name);
+		if (result.isPresent()) {
+			return ResponseEntity.ok(result.get());
 		}
 
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		return ResponseEntity.notFound().build();
 	}
 
 	// Creation C___
