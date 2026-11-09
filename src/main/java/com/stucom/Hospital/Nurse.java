@@ -22,11 +22,12 @@ public class Nurse {
 	@Column(unique = true)
 	private String user;
 	
-	 @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 	
-	 public Nurse() {
-	    }
+	public Nurse() {
+
+	}
 
 	public int getId() {
 		return id;
